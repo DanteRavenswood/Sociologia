@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Química</title>
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --text-light: #1a1a1a;
+      --bg-dark: #121212;
+      --text-dark: #f5f5f5;
+      --modal-bg: #546c4a;
+      --modal-text: #ffffff;
+      --accent-color: #4a90e2;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      padding-top: 60px;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .titulo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      font-size: 2em;
+      font-weight: bold;
+      color: #546c4a;
+      margin-bottom: 10px;
+    }
+
+    .titulo img {
+      height: 110px;
+      vertical-align: middle;
+    }
+
+    .titulo span {
+  padding: 0;
+  background: none;
+  color: #546c4a;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 0;
+}
+
+    .post {
+      max-width: 100%;
+      margin: 20px auto;
+      background: #546c4a;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      color: white;
+    }
+
+    .like-section {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      justify-content: flex-start;
+    }
+
+    .like-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    .like-button img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .like-count {
+      font-size: 1em;
+    }
+
+    /* Modal Styles */
+    .modal, .modal-step, .alert-modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content, .alert-content {
+      background-color: var(--modal-bg);
+      padding: 20px;
+      border: none;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      color: var(--modal-text);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+      color: #ffffff;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #aaaaaa;
+    }
+
+    /* Estilos para o botão de publicar */
+    
+  #publish-btn {
+  background-color: #546c4a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  margin-left: 0; /* Alinha totalmente à esquerda */
+}
+
+    #publish-btn:hover {
+      background-color: #455a3b;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-field {
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .modal-button {
+      padding: 10px 20px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .modal-button:hover {
+      background-color: #3b78c1;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="titulo">
+    <img src="https://github.com/luanzinho0fc/feira-de-ciencias/blob/main/LogoMakerCa-1745319933968.png?raw=true" alt="Logo">
+    <span>Sociologia </span>
+  </div>
+
+  <!-- Botão de Publicar -->
+  <button id="publish-btn">Publicar</button>
+
+  <!-- Área de Posts -->
+  <div id="posts-container"></div>
+
+  <!-- Modal de Publicação -->
+  <div id="modal" class="modal-step">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <p><strong>Aviso:</strong> Somente vídeos do YouTube serão aceitos.</p>
+      <button class="modal-button" id="next-step-1">Próximo</button>
+    </div>
+  </div>
+
+  <!-- Modal para inserir link -->
+  <div id="step-2" class="modal-step">
+    <div class="modal-content">
+      <span class="close" id="close-step-2">&times;</span>
+      <p><strong>Passo 2:</strong> Insira o link do vídeo do YouTube:</p>
+      <input type="url" id="video-link" class="input-field" placeholder="https://youtube.com/..." required>
+      <button class="modal-button" id="next-step-2">Próximo</button>
+    </div>
+  </div>
+
+  <!-- Modal para comentário -->
+  <div id="step-3" class="modal-step">
+    <div class="modal-content">
+      <span class="close" id="close-step-3">&times;</span>
+      <p><strong>Passo 3:</strong> Insira um comentário para o vídeo:</p>
+      <input type="text" id="comment" class="input-field" placeholder="Escreva um comentário..." required>
+      <button class="modal-button" id="next-step-3">Publicar</button>
+    </div>
+  </div>
+
+  <!-- Modal de Alerta -->
+  <div id="alert-modal" class="alert-modal">
+    <div class="alert-content">
+      <span class="close" id="close-alert">&times;</span>
+      <p id="alert-message"></p>
+      <button class="modal-button close-alert">OK</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, doc, setDoc, collection, getDocs, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBb_aj9jIHJRO42bfiwZ8bwdRH7HTx1zx0",
+      authDomain: "studytask-de96f.firebaseapp.com",
+      projectId: "studytask-de96f",
+      storageBucket: "studytask-de96f.firebasestorage.app",
+      messagingSenderId: "200960149603",
+      appId: "1:200960149603:web:9b956822c318fb12765056",
+      measurementId: "G-QBCDVHMH87"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentStep = 1;
+    const likedPosts = new Set();
+
+    // Função para abrir o modal de publicação
+    function openPublishModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    document.getElementById('publish-btn').addEventListener('click', openPublishModal);
+
+    // Fechar modais
+    document.querySelectorAll('.close').forEach(closeBtn => {
+      closeBtn.onclick = function() {
+        closeBtn.closest('.modal, .modal-step, .alert-modal').style.display = 'none';
+      };
+    });
+
+    // Fechar alertas
+    document.querySelectorAll('.close-alert').forEach(alertBtn => {
+      alertBtn.onclick = function() {
+        document.getElementById('alert-modal').style.display = 'none';
+      }
+    });
+
+    // Função para avançar para o próximo passo
+    function nextStep() {
+      const currentModal = document.querySelector(`#step-${currentStep}`) || document.getElementById('modal');
+      if (currentModal) currentModal.style.display = 'none';
+
+      currentStep++;
+
+      if (currentStep > 3) {
+        showAlert("Publicação concluída com sucesso!");
+        resetModal();
+        return;
+      }
+
+      const nextModal = document.querySelector(`#step-${currentStep}`);
+      if (nextModal) nextModal.style.display = 'flex';
+    }
+
+    document.getElementById('next-step-1').addEventListener('click', nextStep);
+    document.getElementById('next-step-2').addEventListener('click', nextStep);
+    document.getElementById('next-step-3').addEventListener('click', publishVideo);
+
+    // Função para converter link do YouTube para embed URL
+    function convertToEmbedURL(url) {
+      const urlObj = new URL(url);
+      let videoId;
+      let embedUrl;
+
+      if (urlObj.hostname.includes('youtu.be')) {
+        videoId = urlObj.pathname.slice(1);
+      } else if (urlObj.hostname.includes('youtube.com')) {
+        videoId = urlObj.searchParams.get('v');
+      }
+
+      if (videoId) {
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        if (urlObj.searchParams.has('t')) {
+          embedUrl += `?start=${parseInt(urlObj.searchParams.get('t').replace('s', ''))}`;
+        }
+      }
+
+      return embedUrl;
+    }
+
+    // Função para publicar o vídeo
+    async function publishVideo() {
+      const videoLink = document.getElementById('video-link').value;
+      const comment = document.getElementById('comment').value;
+
+      if (!videoLink || !comment) {
+        showAlert("Por favor, preencha todos os campos!");
+        return;
+      }
+
+      try {
+        const embedUrl = convertToEmbedURL(videoLink);
+        await setDoc(doc(collection(db, "documen Sociologia")), {
+          videoLink: embedUrl,
+          comment: comment,
+          likes: 0,
+          timestamp: new Date()
+        });
+
+        showAlert("Vídeo publicado com sucesso!");
+        resetModal();
+        loadPosts();
+      } catch (error) {
+        showAlert("Erro ao publicar vídeo: " + error.message);
+      }
+    }
+
+    // Resetar o modal
+    function resetModal() {
+      document.querySelectorAll('.modal-step').forEach(modal => modal.style.display = 'none');
+      currentStep = 1;
+      document.getElementById('video-link').value = '';
+      document.getElementById('comment').value = '';
+    }
+
+    // Função para mostrar alertas
+    function showAlert(message) {
+      document.getElementById('alert-message').textContent = message;
+      document.getElementById('alert-modal').style.display = 'flex';
+    }
+
+    // Função global para curtir o post
+    window.curtirPost = async function(postId, docId) {
+      if (likedPosts.has(postId)) {
+        showAlert("Você já curtiu essa publicação!");
+        return;
+      }
+
+      const likeCountElement = document.getElementById(`like-count-${postId}`);
+      let likes = parseInt(likeCountElement.textContent);
+      likes++;
+      likeCountElement.textContent = `${likes} curtidas`;
+
+      likedPosts.add(postId);
+
+      const postRef = doc(db, "publicacoes", docId);
+      await updateDoc(postRef, {
+        likes: likes
+      });
+    }
+
+    // Carregar posts do Firebase
+    async function loadPosts() {
+      const postsContainer = document.getElementById('posts-container');
+      postsContainer.innerHTML = '';
+
+      const q = query(collection(db, "documen Sociologia"), orderBy("timestamp", "desc"));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        const post = doc.data();
+        const postId = doc.id;
+
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+          <iframe width="100%" height="315" src="${post.videoLink}" frameborder="0" allowfullscreen></iframe>
+          <p>${post.comment}</p>
+          <div class="like-section">
+            <button class="like-button" onclick="curtirPost('${postId}', '${doc.id}')">
+              <img src="https://cdn-icons-png.flaticon.com/128/11301/11301961.png" alt="Curtir">
+            </button>
+            <span id="like-count-${postId}" class="like-count">${post.likes} curtidas</span>
+          </div>
+        `;
+
+        postsContainer.appendChild(postElement);
+      });
+    }
+
+    loadPosts();
+  </script>
+
+</body>
+</html>

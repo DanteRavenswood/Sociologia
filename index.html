@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interface com Animação de Menu</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 0;
+    }
+
+    #menuButton {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .bar {
+      width: 30px;
+      height: 4px;
+      background-color: #222;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    #menuButton.open .bar1 {
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    #menuButton.open .bar2 {
+      opacity: 0;
+    }
+
+    #menuButton.open .bar3 {
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+    .iconContainerWrapper {
+      position: fixed;
+      top: 10px;
+      left: 70px;
+      width: calc(100% - 80px);
+      overflow-x: auto;
+      z-index: 2;
+      display: none;
+    }
+
+    .iconContainerWrapper.open {
+      display: block;
+    }
+
+    .iconContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .iconContainer button {
+      background-color: white;
+      border: 1px solid #546c4a;
+      border-radius: 8px;
+      color: #546c4a;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+      margin-right: 10px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .iconContainer button:hover {
+      background-color: #546c4a;
+      color: white;
+    }
+
+    .iconContainer img {
+      width: 30px;
+      height: auto;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="tela" src="inicio.html"></iframe>
+
+  <div id="menuButton" onclick="toggleIcons()">
+    <div class="bar bar1"></div>
+    <div class="bar bar2"></div>
+    <div class="bar bar3"></div>
+  </div>
+
+  <div class="iconContainerWrapper" id="iconContainerWrapper">
+    <div class="iconContainer" id="iconContainer">
+      <button onclick="mudarPagina('inicio.html')">
+        <img src="https://cdn-icons-png.flaticon.com/128/3917/3917032.png" alt="Início">
+        <span>Início</span>
+      </button>
+      <button onclick="mudarPagina('video.html')">
+        <img src="https://cdn-icons-png.flaticon.com/128/4406/4406124.png" alt="Vídeo">
+        <span>Vídeo</span>
+      </button>
+      <button onclick="mudarPagina('documentarios.html')">
+        <img src="https://cdn-icons-png.flaticon.com/128/1710/1710296.png" alt="Documentário">
+        <span>Documentário</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function toggleIcons() {
+      const iconContainerWrapper = document.getElementById('iconContainerWrapper');
+      const menuButton = document.getElementById('menuButton');
+      iconContainerWrapper.classList.toggle('open');
+      menuButton.classList.toggle('open');
+    }
+
+    function mudarPagina(pagina) {
+      document.getElementById('tela').src = pagina;
+    }
+  </script>
+</body>
+</html>
